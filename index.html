@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Politi-Purple</title>
+
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Anton|Dancing+Script|Gloria+Hallelujah|Josefin+Sans|Lobster|Pacifico" rel="stylesheet">
+	<link rel="stylesheet" href="css/style.css">
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+	<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+	
+</head>
+<body>
+	<div class="wrapper">
+		<div class="jumbotron jumbotron-fluid">
+	  		<div class="container">
+				<div class="row">
+					<div class="col-2 col-sm-2 col-md-2 col-lg-2">
+						<img src="images/donkey.png">
+					</div>
+					<div class="col-8 col-sm-8 col-md-8 col-lg-8">
+						<h1 class="display-4">PolitiPurple</h1>
+						<p class="lead">For every news story there's an equal and opposite news story</p>
+					</div>	 
+					<div class="col-2 col-sm-2 col-md-2 col-lg-2">
+						<img src="images/elephant.png">
+					</div> 
+				 </div>
+
+	  		</div>
+		</div>
+
+		<div class="container searchContainer">
+			<div class="row">
+				<div class="col-sm-3">
+					<div class="topic-source myBox">
+						<input id="searchTopic" type="text" placeholder="Search Topic (Required)">
+					</div>
+				</div>
+				<div class="col-sm-3 formControl myBox"> 
+					<select class= "myBox" id="sourceBar">
+						<option value="select-news-source">Select News Source (Required)</option>
+						<option value="breitbart-news" >Breitbart News</option>
+						<option value="buzzfeed" >BuzzFeed</option>
+				        <option value="cnn" >CNN</option>
+				        <option value="fox-news" >Fox News</option>
+				        <option value="the-huffington-post" >Huffington Post</option>
+				        <option value="msnbc" >MSNBC</option>
+				        <option value="the-economist" >The Economist</option>
+				        <option value="the-guardian-uk" >The Guardian UK</option>
+				        <option value="the-hill" >The Hill</option>
+				   		<option value="time">Time</option>
+				   		<option value="the-washing-post">Washington Post</option>
+				   		<option value="the-wall-street-journal" >Wall Street Journal</option>
+					</select>
+				</div>
+				<div class="col-sm-3">
+					<div class="myBox ageBox">
+						<input placeholder="Your Age (Optional)">
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<select class="formControl myBox" id="genderBox">
+						<option value="gender">Your Gender (Optional)</option>
+						<option value="male">Female</option>
+						<option value="female">Male</option>
+						<option value="other">Other</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				 	<button type="button" class="btn btn-secondary" id="showNews">Search the News</button>
+			</div>
+		</div>
+		<div class="container articleContainer">
+  			<div class="row">
+    			<div class="col-sm"></div>
+    			<div class="col-sm"></div>
+  			</div>
+		</div>
+	
+		<div class="container chartContainer">
+			<div id="myChart"></div>
+			<p> The pairing of equal and opposite sources have been based on the Media Bias Chart and analysis. For more information and more ranking of sources, <a href="http://www.allgeneralizationsarefalse.com/the-chart-version-3-0-what-exactly-are-we-reading/" target="_blank">continue reading here.</a></p> 
+		</div>
+
+		<div class="push"></div>
+	</div>
+
+	<footer>
+		&copy; Copyright PolitiPurple 2018
+	</footer>
+<script src="javascript/app.js"></script>
+
+</body>
+</html>
