@@ -14,9 +14,15 @@
  //Priya's Code that fetches articles from news API
 
 	var apiKey = "52d1c20852064e27ad9777ae8ab088d7";
+	var apiKeyFB = "4d9c7a74-a2a5-497c-8c59-7dd2f5113ce3";
 	var newsSubject = "";
 	var newsSource1 = "";
 	var newsSource2 = "";
+	var newsTitle1="";
+	var newsTitle2="";
+	var age=0;
+	var gender="";
+	var lean="";
 	var newsSourcePair = {
 		"pair1": ["the-washington-post", "time"],
 		"pair2": ["cnn", "the-economist"],
@@ -33,34 +39,61 @@ function pairFind() {
 
 	newsSource1 = $(".myBox option:selected").val();
 
+	//adding left and right
+
 	for (var i = 0, j = 0; i < pair.length; i++) {
 		if (newsSourcePair[pair[i]][j] == newsSource1) {
 			newsSource2 = newsSourcePair[pair[i]][j + 1];
+			lean="left";
 			queryAPI(newsSource1, newsSource2);
 		} else if (newsSourcePair[pair[i]][j + 1] == newsSource1) {
 			newsSource2 = newsSourcePair[pair[i]][j];
+			lean="right";
 			queryAPI(newsSource1, newsSource2);
 		}
 	}
 }
 
+// we will need to reset left and right
+
 $("#showNews").on("click", function (e) {
     e.preventDefault();
     if($("#searchTopic").val()!="" && $(".myBox option:selected").val()!= "select-news-source"){
+  //Katharine updated for firebase      
         newsSubject = $("#searchTopic").val().trim();
-        $("#searchTopic").val("");
-        pairFind();
-    }
-    else
-    {
+        age = $("#ageBox").val().trim();
+        gender = $("#genderBox").val().trim();
+
+		if ((age===0)||((age!==0)&&(/^\d+$/.age))){
+    
+	        database.ref().push({
+	        newsSubject: newsSubject,
+	        newsSource1: newsSource1,
+	        age:age,
+	        gender: gender,
+	        dateAdded: moment()
+	      })
+    	}
+
+    	else{
+    		console.log("Age must be digit.");
+    	}
+
+    	pairFind();
+    	$("#searchTopic").val("");
+        $(".myBox").val("select-news-source");
+        $("#ageBox").val("");
+        $("#genderBox").val("");
+    	}
+
+    else{
         console.log("Please enter required values");
     }
+
 });
 
 
-
-
-function queryAPI(newsSource1, newsSource2) {
+ function queryAPI(newsSource1, newsSource2) {
 	var from = moment().subtract(1, "months").format("YYYY-MM-DD");
 	var to = moment().format("YYYY-MM-DD");
 	var count=1;
@@ -73,22 +106,53 @@ function queryAPI(newsSource1, newsSource2) {
 	console.log("news Source 1   " + newsSource1);
 	console.log("news source 2   " + newsSource2);
 
-	var queryURL1 = "https://newsapi.org/v2/everything?q=" + newsSubject + "&sources=" + newsSource1 + "&sortBy=relevancy&from=" + from + "&to=" + to + "&apiKey=" + apiKey;
+	var queryURL1 = "https://newsapi.org/v2/everything?q=" + newsSubject + "&sources=" + newsSource1 + "&sortBy=relevancy&from=" + from + "&to=" + to + "&language=en&apiKey=" + apiKey;
 
-	var queryURL2 = "https://newsapi.org/v2/everything?q=" + newsSubject + "&sources=" + newsSource2 + "&sortBy=relevancy&from=" + from + "&to=" + to + "&apiKey=" + apiKey;
+	var queryURL2 = "https://newsapi.org/v2/everything?q=" + newsSubject + "&sources=" + newsSource2 + "&sortBy=relevancy&from=" + from + "&to=" + to + "&language=en&apiKey=" + apiKey;
 
+	var article1Div=$("<div>");
+	var article2Div=$("<div>");
 
 	$.ajax({
 		url: queryURL1,
 		method: "GET"
 	}).then(function (response) {
 
+		newsTitle1= response.articles[0].title;
+		
 		console.log(" Response name  " + response.articles[0].source.name);
 		console.log(" Response title  " + response.articles[0].title);
 		console.log(" Response  description  " + response.articles[0].description);
 		console.log(" Response  url  " + response.articles[0].url);
 		console.log(" Response  imageurl  " + response.articles[0].urlToImage);
 		console.log(" Response  date  " + response.articles[0].publishedAt);
+
+		if(newsTitle1==="null"){
+			article1Div.text("No article found");
+		}
+
+		else if(lean="left"){
+			article1Div.addClass("firstLeftArticle");
+			var pic= $("<img>");
+			pic.attr("src", response.articles[0].urlToImage);
+			article1Div.append(pic);
+			article1Div.append("<h3 class='article1Left'><a href="+response.articles[0].url+
+				">"+response.articles[0].title+"</h3><h4> Published on "+response.articles[0].publishedAt+" "+"by"+" "+response.articles[0].source.name+
+				"</h4><h4>"+response.articles[0].description+"</h4>");
+		$(".leftArticle").html(article1Div);
+		}
+
+		else if(lean="right"){
+			article1Div.addClass("firstRightArticle");
+			var pic= $("<img>");
+			pic.attr("src", response.articles[0].urlToImage);
+			article1Div.append(pic);
+			article1Div.append("<h3> class='article1Right'<a href="+response.articles[0].url+
+				">"+response.articles[0].title+"</h3><h4> Published on "+response.articles[0].publishedAt+" "+"by"+" "+response.articles[0].source.name+
+				"/<h4><h4>"+response.articles[0].description+"</h4>");
+			$(".rightArticle").html(article1Div);
+
+		}
 
 
 		for (var i = 1; i < 10; i++) {
@@ -103,6 +167,21 @@ function queryAPI(newsSource1, newsSource2) {
 				break;
 			}
 		}
+	}).then(function (response){
+
+		var queryURL_FB1 = "http://webhose.io/filterWebContent?token=" + apiKeyFB + "&format=json&ts=1515290541502&sort=social.facebook.likes&q=%22" + newsTitle1 + "%22%20language%3Aenglish";
+		
+			$.ajax({
+	        url: queryURL_FB1,
+	        method: "GET"
+	    }).done(function(response) {
+			var results = response.posts;
+
+			console.log("news title 1  "  +newsTitle1);
+			console.log("Likes: " + results[0].thread.social.facebook.likes);
+			
+	    });
+
 
 	}).fail(function (jqXHR, textStatus, errorThrown) {
 		console.log("Error Message  " + textStatus);
@@ -112,6 +191,7 @@ function queryAPI(newsSource1, newsSource2) {
 		url: queryURL2,
 		method: "GET"
 	}).then(function (response) {
+		newsTitle2= response.articles[0].title;
 		console.log(" Response name  " + response.articles[0].source.name);
 		console.log(" Response title  " + response.articles[0].title);
 		console.log(" Response  description  " + response.articles[0].description);
@@ -132,49 +212,27 @@ function queryAPI(newsSource1, newsSource2) {
 			}
 		}
 
+	}).then(function(response) {
+		
+		var queryURL_FB2 = "http://webhose.io/filterWebContent?token=" + apiKeyFB + "&format=json&ts=1515290541502&sort=social.facebook.likes&q=%22" + newsTitle2 + "%22%20language%3Aenglish";
+		
+			$.ajax({
+	        url: queryURL_FB2,
+	        method: "GET"
+	    }).done(function(response) {
+			var results = response.posts;
+
+			console.log("news title 2  "  +newsTitle2);		
+			console.log("Likes: " + results[0].thread.social.facebook.likes);
+			
+	    });
+
+    
 	}).fail(function (jqXHR, textStatus, errorThrown) {
 		console.log("Error Message  " + textStatus);
 	});
+
 }
-
-//mark's code retrieving fb likes
-
-// var userInput = prompt("Search Something, Such as: Super Bowl");
-
-// var apiKey2 = "token=4d9c7a74-a2a5-497c-8c59-7dd2f5113ce3";
-
-// var queryURL = "http://webhose.io/filterWebContent?" + apiKey2 + "&format=json&ts=1515290541502&sort=social.facebook.likes&q=%22" + userInput + "%22%20language%3Aenglish";
-
-// function ajaxGetUrl() {
-//     $.ajax({
-//         url: queryURL,
-//         method: 'GET'
-//     }).done(function(response) {
-// 		var results = response.posts;
-// 			console.log("queryURL: " + queryURL); // show constructed url
-// 			console.log(response);  //console test to make sure something returns
-// 			console.log("================================================================================");			
-// 		for (var i = 0; i < results.length; i++){
-// 			var newsDiv = $("<div>");
-// 			var newsImage = $("<img>");
-// 			var linkString = results[i].thread.title_full;
-// 			var createdLink = linkString.link(results[i].thread.url);
-			
-// 			newsImage.attr("src", results[i].thread.main_image);
-// 			$("#newsView").append(newsDiv);
-// 			newsDiv.append(newsImage);
-// 			newsDiv.append(createdLink + " (Likes: " + results[i].thread.social.facebook.likes + ")" + "<br>" + results[i].text.substring(0, 250) + "...\"");
-
-// 			console.log("title_full: " + results[i].thread.title_full);	
-// 			console.log("text: " + results[i].text);	
-// 			console.log("likes: " + results[i].thread.social.facebook.likes);
-// 			console.log("url: " + results[i].thread.url);
-// 			console.log(results[i].thread.main_image);
-// 			console.log("================================================================================");
-// 		}
-//     });
-// }	
-// 	ajaxGetUrl();
 
 //Katharine's Code that creates chart
 
