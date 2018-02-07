@@ -1,6 +1,9 @@
 *{
     box-sizing: border-box;
 }
+body{
+    font-family: 'Alegreya Sans', sans-serif;
+}
 
 .jumbotron {
 	background: linear-gradient(270deg, #275df3, #f32121);
@@ -33,10 +36,10 @@ animation: AnimationName 30s ease infinite;
 
 }
 .display-4 {
-	font-family: 'Lobster', cursive;
+	font-family: 'Abril Fatface', cursive;
 }
 .lead {
-	font-family: 'Lobster', cursive;
+	font-family: 'Abril Fatface', cursive;
 }
 * {
     box-sizing: border-box;
@@ -87,6 +90,7 @@ input, select{
 #showNews{
     margin: 0 auto;
     margin-top: 10px;
+    font-family: 'Abril Fatface', cursive;
 }
 
 .articleContainer{
@@ -95,34 +99,40 @@ input, select{
 }
 /*dynamic divs*/
 
-.firstArticle{
+
+.allArticles{
     background: white;
     border:1px solid purple;
     border-radius: 5px;
     padding: 5px;
+    height: 600px;
 }
 
 .topHalf{
     overflow: scroll;
-    height: 400px;
+    height: 350px;
+    margin-bottom: 5px;
 }
 
-.firstArticle h3{
+.topHalf h3{
     font-size: 18px;
 }
 
-.firstArticle h4{
+.topHalf h4{
     font-size: 13px;
 }
 
 .img-thumbnail{
     max-width: 300px;
+    height:200px;
     border-radius: 5px;
     margin-top: 3px;
 }
 
-
-
+.additionalArticle h3{
+    font-size: 16px;
+}
+/*end*/
 #myChart{
     float: left;
     width: 70%;
@@ -144,6 +154,7 @@ input, select{
 /*------------------------------------------------------------------------------*/
 footer {
     clear: both;
+    font-family: 'Abril Fatface', cursive;
 	left: 0;
 	bottom: 0;
 	margin: 0;

@@ -60,34 +60,42 @@ $("#showNews").on("click", function (e) {
     if($("#searchTopic").val()!="" && $(".myBox option:selected").val()!= "select-news-source"){     
         newsSubject = $("#searchTopic").val().trim();
         age = $("#ageBox").val().trim();
-        var age2=parseInt(age);
         gender = $("#genderBox").val().trim();
         var dateAdded=moment().format("YYYY-MM-DD");
         pairFind();
-        console.log(age2);
+        console.log(age);
 
-        //firebase push
-		if ((age2==="")||((age2!=="")&&(/^\d+$/.age2))){
-    
-	        database.ref().push({
-	        newsSubject: newsSubject,
-	        newsSource1: newsSource1,
-	        age:age2,
-	        gender: gender,
-	        dateAdded: dateAdded
+        if(age==""){
+           age=0;
+       }
+       else if(parseInt(age) > 1 || parseInt(age) < 100){
+           age=age;
+
+       }
+       else{
+           age=-1;
+       }
+
+       if(age>=0){
+    	database.ref().push({
+	    newsSubject: newsSubject,
+	    newsSource1: newsSource1,
+	    age:age,
+	    gender: gender,
+	    dateAdded: dateAdded
 	      })
+
     	}
 
     	else{
-    		console.log(age2);
-    		console.log("Age must be digit.");
+    		console.log("Please Enter Valid Age");
     	}
 
     	//reset boxes
     	$("#searchTopic").val("");
         $(".myBox").val("select-news-source");
         $("#ageBox").val("");
-        $("#genderBox").val("");
+        $("#genderBox").val("gender");
     	}
 
     else{
@@ -116,8 +124,8 @@ $("#showNews").on("click", function (e) {
 
 	var article1Div=$("<div>");
 	var article2Div=$("<div>");
-	article1Div.addClass("firstArticle");
-	article2Div.addClass("firstArticle");
+	article1Div.addClass("allArticles");
+	article2Div.addClass("allArticles");
 
 	$.ajax({
 		url: queryURL1,
@@ -155,16 +163,16 @@ $("#showNews").on("click", function (e) {
 		}
 
 		//different layout for next articles
-		for (var j = 1; j < 10; j++) {
-			if (response.articles[0].title != response.articles[j].title) {
+		for (var i = 1; i < 10; i++) {
+			if (response.articles[0].title != response.articles[i].title) {
 
 				var article1childDiv=$("<div>");
 				article1childDiv.addClass("additionalArticle");
-				article1childDiv.append("<h3 class='articleText'><a href="+response.articles[j].url+
-				">"+response.articles[j].title+"</a></h3>");
+				article1childDiv.append("<h3 class='articleText'><a href="+response.articles[i].url+
+				"target='_blank'>"+response.articles[i].title+"</a></h3>");
 				article1Div.append(article1childDiv);
-				//console.log(" Response  ttle   " + response.articles[j].title);
-				//console.log(" Response  url   " + response.articles[j].url);
+				// console.log(" Response  ttle   " + response.articles[i].title);
+				// console.log(" Response  url   " + response.articles[i].url);
 				count++;
 			}
 			if(count===5)
@@ -173,6 +181,7 @@ $("#showNews").on("click", function (e) {
 				break;
 			}
 		}
+
 	}).then(function (response){
 
 		var queryURL_FB1 = "http://webhose.io/filterWebContent?token=" + apiKeyFB + "&format=json&ts=1515290541502&sort=social.facebook.likes&q=%22" + newsTitle1 + "%22%20language%3Aenglish";
@@ -183,16 +192,26 @@ $("#showNews").on("click", function (e) {
 	    }).done(function(response) {
 			var results = response.posts;
 
-			console.log("news title 1  "  +newsTitle1);
-			console.log("Likes: " + results[0].thread.social.facebook.likes);
 			if(results != "")
 			{
-
+			console.log("news title 1  "  +newsTitle1);
 			console.log("Likes: " + results[0].thread.social.facebook.likes);
+
+			var likeDiv=$("<div>");
+				likeDiv.addClass("likeDiv");
+				likeDiv.append("<p>This article was identified as a top article on facebook and received:"
+					+ " "+results[0].thread.social.facebook.likes+" "+ "likes<i class='far fa-thumbs-up'></i></p>");
+				article1Div.prepend(likeDiv);
+
 				}
 			else
 			{
 				console.log("content not found");
+
+				var likeDiv=$("<div>");
+				likeDiv.addClass("likeDiv");
+				likeDiv.append("<p>This article was not identified as a top article on facebook.</p>");
+				article1Div.prepend(likeDiv);
 			}
 
 	    }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -243,10 +262,10 @@ $("#showNews").on("click", function (e) {
 				var article2childDiv=$("<div>");
 				article2childDiv.addClass("additionalArticle");
 				article2childDiv.append("<h3 class='articleText'><a href="+response.articles[j].url+
-				">"+response.articles[j].title+"</a></h3>");
+				"target='_blank'>"+response.articles[j].title+"</a></h3>");
 				article2Div.append(article2childDiv);
-				//console.log(" Response  ttle   " + response.articles[j].title);
-				//console.log(" Response  url   " + response.articles[j].url);
+				// console.log(" Response  ttle   " + response.articles[j].title);
+				// console.log(" Response  url   " + response.articles[j].url);
 				count++;
 			}
 			if(count===5)
@@ -266,17 +285,24 @@ $("#showNews").on("click", function (e) {
 	    }).done(function(response) {
 			var results = response.posts;
 
-			console.log("news title 2  "  +newsTitle2);		
-			console.log("Likes: " + results[0].thread.social.facebook.likes);
-
 			if(results != "")
 			{
-
+			console.log("news title 2  "  +newsTitle2);	
 			console.log("Likes: " + results[0].thread.social.facebook.likes);
+
+			var likeDiv=$("<div>");
+				likeDiv.addClass("likeDiv");
+				likeDiv.append("<p>This article was identified as a top article on facebook and received:"
+					+ " "+results[0].thread.social.facebook.likes+" "+ "likes<i class='far fa-thumbs-up'></i></p>");
+				article2Div.prepend(likeDiv);
 				}
 			else
 			{
 				console.log("content not found");
+				var likeDiv=$("<div>");
+				likeDiv.addClass("likeDiv");
+				likeDiv.append("<p>This article was not identified as a top article on facebook.</p>");
+				article2Div.prepend(likeDiv);
 			}
 			
 	    }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -288,14 +314,16 @@ $("#showNews").on("click", function (e) {
 		console.log("Error Message  " + textStatus);
 	});
 
-if(lean="left"){
+if(lean==="left"){
 	$(".leftArticle").append(article1Div);
 	$(".rightArticle").append(article2Div);
+	lean="";
 }
 
-else if (lean="right"){
+else if (lean==="right"){
 	$(".leftArticle").append(article2Div);
 	$(".rightArticle").append(article1Div);
+	lean="";
 }
 }
 
