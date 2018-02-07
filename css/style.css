@@ -89,6 +89,40 @@ input, select{
     margin-top: 10px;
 }
 
+.articleContainer{
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+/*dynamic divs*/
+
+.firstArticle{
+    background: white;
+    border:1px solid purple;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.topHalf{
+    overflow: scroll;
+    height: 400px;
+}
+
+.firstArticle h3{
+    font-size: 18px;
+}
+
+.firstArticle h4{
+    font-size: 13px;
+}
+
+.img-thumbnail{
+    max-width: 300px;
+    border-radius: 5px;
+    margin-top: 3px;
+}
+
+
+
 #myChart{
     float: left;
     width: 70%;

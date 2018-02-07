@@ -20,7 +20,7 @@
 	var newsSource2 = "";
 	var newsTitle1="";
 	var newsTitle2="";
-	var age=0;
+	var age="";
 	var gender="";
 	var lean="";
 	var newsSourcePair = {
@@ -62,24 +62,29 @@ $("#showNews").on("click", function (e) {
   //Katharine updated for firebase      
         newsSubject = $("#searchTopic").val().trim();
         age = $("#ageBox").val().trim();
+        var age2=parseInt(age);
         gender = $("#genderBox").val().trim();
+        var dateAdded=moment().format("YYYY-MM-DD");
+        pairFind();
+        console.log(age2);
 
-		if ((age===0)||((age!==0)&&(/^\d+$/.age))){
+		if ((age2==="")||((age2!=="")&&(/^\d+$/.age2))){
     
 	        database.ref().push({
 	        newsSubject: newsSubject,
 	        newsSource1: newsSource1,
-	        age:age,
+	        age:age2,
 	        gender: gender,
-	        dateAdded: moment()
+	        dateAdded: dateAdded
 	      })
     	}
 
     	else{
+    		console.log(age2);
     		console.log("Age must be digit.");
     	}
 
-    	pairFind();
+    	
     	$("#searchTopic").val("");
         $(".myBox").val("select-news-source");
         $("#ageBox").val("");
@@ -112,6 +117,8 @@ $("#showNews").on("click", function (e) {
 
 	var article1Div=$("<div>");
 	var article2Div=$("<div>");
+	article1Div.addClass("firstArticle");
+	article2Div.addClass("firstArticle");
 
 	$.ajax({
 		url: queryURL1,
@@ -119,6 +126,7 @@ $("#showNews").on("click", function (e) {
 	}).then(function (response) {
 
 		newsTitle1= response.articles[0].title;
+		console.log(lean);
 		
 		console.log(" Response name  " + response.articles[0].source.name);
 		console.log(" Response title  " + response.articles[0].title);
@@ -131,27 +139,35 @@ $("#showNews").on("click", function (e) {
 			article1Div.text("No article found");
 		}
 
-		else if(lean="left"){
-			article1Div.addClass("firstLeftArticle");
+
+		else if(lean==="left"){
+			var tophalf=$("<div>");
+			tophalf.addClass("topHalf");
 			var pic= $("<img>");
-			pic.attr("src", response.articles[0].urlToImage);
-			article1Div.append(pic);
-			article1Div.append("<h3 class='article1Left'><a href="+response.articles[0].url+
-				">"+response.articles[0].title+"</h3><h4> Published on "+response.articles[0].publishedAt+" "+"by"+" "+response.articles[0].source.name+
+			pic.addClass("img-thumbnail");
+			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
+			tophalf.append(pic);
+			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+
+				"target='_blank'>"+response.articles[0].title+"</a></h3><h4> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
+				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
 				"</h4><h4>"+response.articles[0].description+"</h4>");
-		$(".leftArticle").html(article1Div);
+			article1Div.append(tophalf);
+			$(".leftArticle").html(article1Div);
 		}
 
-		else if(lean="right"){
-			article1Div.addClass("firstRightArticle");
+		else if(lean==="right"){
+			var tophalf=$("<div>");
+			tophalf.addClass("topHalf");
 			var pic= $("<img>");
-			pic.attr("src", response.articles[0].urlToImage);
-			article1Div.append(pic);
-			article1Div.append("<h3> class='article1Right'<a href="+response.articles[0].url+
-				">"+response.articles[0].title+"</h3><h4> Published on "+response.articles[0].publishedAt+" "+"by"+" "+response.articles[0].source.name+
-				"/<h4><h4>"+response.articles[0].description+"</h4>");
+			pic.addClass("img-thumbnail");
+			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
+			tophalf.append(pic);
+			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+
+				"target='_blank'>"+response.articles[0].title+"</a></h3><h4> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
+				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
+				"</h4><h4>"+response.articles[0].description+"</h4>");
+			article1Div.append(tophalf);
 			$(".rightArticle").html(article1Div);
-
 		}
 
 
@@ -180,7 +196,9 @@ $("#showNews").on("click", function (e) {
 			console.log("news title 1  "  +newsTitle1);
 			console.log("Likes: " + results[0].thread.social.facebook.likes);
 			
-	    });
+	    }).fail(function (jqXHR, textStatus, errorThrown) {
+		console.log("Error Message  " + textStatus);
+		});
 
 
 	}).fail(function (jqXHR, textStatus, errorThrown) {
@@ -198,6 +216,41 @@ $("#showNews").on("click", function (e) {
 		console.log(" Response  url  " + response.articles[0].url);
 		console.log(" Response  imageurl  " + response.articles[0].urlToImage);
 		console.log(" Response  date  " + response.articles[0].publishedAt);
+
+		if(newsTitle2==="null"){
+			article2Div.text("No article found");
+		}
+
+
+		else if(lean==="right"){
+			var tophalf=$("<div>");
+			tophalf.addClass("topHalf");
+			var pic= $("<img>");
+			pic.addClass("img-thumbnail");
+			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
+			tophalf.append(pic);
+			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+
+				"target='_blank'>"+response.articles[0].title+"</a></h3><h4> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
+				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
+				"</h4><h4>"+response.articles[0].description+"</h4>");
+			article2Div.append(tophalf);
+		$(".leftArticle").html(article2Div);
+		}
+
+		else if(lean==="left"){
+			var tophalf=$("<div>");
+			tophalf.addClass("topHalf");			
+			var pic= $("<img>");
+			pic.addClass("img-thumbnail");
+			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
+			tophalf.append(pic);
+			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+
+				"target='_blank'>"+response.articles[0].title+"</a></h3><h4> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
+				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
+				"</h4><h4>"+response.articles[0].description+"</h4>");
+			article2Div.append(tophalf);
+			$(".rightArticle").html(article2Div);
+		}
 
 		for (var j = 1; j < 10; j++) {
 			if (response.articles[0].title != response.articles[j].title) {
@@ -225,7 +278,9 @@ $("#showNews").on("click", function (e) {
 			console.log("news title 2  "  +newsTitle2);		
 			console.log("Likes: " + results[0].thread.social.facebook.likes);
 			
-	    });
+	    }).fail(function (jqXHR, textStatus, errorThrown) {
+		console.log("Error Message  " + textStatus);
+		});
 
     
 	}).fail(function (jqXHR, textStatus, errorThrown) {
