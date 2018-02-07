@@ -11,7 +11,6 @@
 
   var database=firebase.database();
 
- //Priya's Code that fetches articles from news API
 
 	var apiKey = "52d1c20852064e27ad9777ae8ab088d7";
 	var apiKeyFB = "4d9c7a74-a2a5-497c-8c59-7dd2f5113ce3";
@@ -23,6 +22,7 @@
 	var age="";
 	var gender="";
 	var lean="";
+	//sets news sources pairs
 	var newsSourcePair = {
 		"pair1": ["the-washington-post", "time"],
 		"pair2": ["cnn", "the-economist"],
@@ -54,12 +54,10 @@ function pairFind() {
 	}
 }
 
-// we will need to reset left and right
 
 $("#showNews").on("click", function (e) {
     e.preventDefault();
-    if($("#searchTopic").val()!="" && $(".myBox option:selected").val()!= "select-news-source"){
-  //Katharine updated for firebase      
+    if($("#searchTopic").val()!="" && $(".myBox option:selected").val()!= "select-news-source"){     
         newsSubject = $("#searchTopic").val().trim();
         age = $("#ageBox").val().trim();
         var age2=parseInt(age);
@@ -68,6 +66,7 @@ $("#showNews").on("click", function (e) {
         pairFind();
         console.log(age2);
 
+        //firebase push
 		if ((age2==="")||((age2!=="")&&(/^\d+$/.age2))){
     
 	        database.ref().push({
@@ -84,7 +83,7 @@ $("#showNews").on("click", function (e) {
     		console.log("Age must be digit.");
     	}
 
-    	
+    	//reset boxes
     	$("#searchTopic").val("");
         $(".myBox").val("select-news-source");
         $("#ageBox").val("");
@@ -135,12 +134,13 @@ $("#showNews").on("click", function (e) {
 		console.log(" Response  imageurl  " + response.articles[0].urlToImage);
 		console.log(" Response  date  " + response.articles[0].publishedAt);
 
-		if(newsTitle1==="null"){
+		if(response===""){
+			console.log("No Article");
 			article1Div.text("No article found");
 		}
 
-
-		else if(lean==="left"){
+		//this will append an left source to the left side and vice versa
+		else {
 			var tophalf=$("<div>");
 			tophalf.addClass("topHalf");
 			var pic= $("<img>");
@@ -152,29 +152,19 @@ $("#showNews").on("click", function (e) {
 				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
 				"</h4><h4>"+response.articles[0].description+"</h4>");
 			article1Div.append(tophalf);
-			$(".leftArticle").html(article1Div);
 		}
 
-		else if(lean==="right"){
-			var tophalf=$("<div>");
-			tophalf.addClass("topHalf");
-			var pic= $("<img>");
-			pic.addClass("img-thumbnail");
-			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
-			tophalf.append(pic);
-			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+
-				"target='_blank'>"+response.articles[0].title+"</a></h3><h4> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
-				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
-				"</h4><h4>"+response.articles[0].description+"</h4>");
-			article1Div.append(tophalf);
-			$(".rightArticle").html(article1Div);
-		}
+		//different layout for next articles
+		for (var j = 1; j < 10; j++) {
+			if (response.articles[0].title != response.articles[j].title) {
 
-
-		for (var i = 1; i < 10; i++) {
-			if (response.articles[0].title != response.articles[i].title) {
-				console.log(" Response  ttle   " + response.articles[i].title);
-				console.log(" Response  url   " + response.articles[i].url);
+				var article1childDiv=$("<div>");
+				article1childDiv.addClass("additionalArticle");
+				article1childDiv.append("<h3 class='articleText'><a href="+response.articles[j].url+
+				">"+response.articles[j].title+"</a></h3>");
+				article1Div.append(article1childDiv);
+				//console.log(" Response  ttle   " + response.articles[j].title);
+				//console.log(" Response  url   " + response.articles[j].url);
 				count++;
 			}
 			if(count===5)
@@ -195,7 +185,16 @@ $("#showNews").on("click", function (e) {
 
 			console.log("news title 1  "  +newsTitle1);
 			console.log("Likes: " + results[0].thread.social.facebook.likes);
-			
+			if(results != "")
+			{
+
+			console.log("Likes: " + results[0].thread.social.facebook.likes);
+				}
+			else
+			{
+				console.log("content not found");
+			}
+
 	    }).fail(function (jqXHR, textStatus, errorThrown) {
 		console.log("Error Message  " + textStatus);
 		});
@@ -204,6 +203,8 @@ $("#showNews").on("click", function (e) {
 	}).fail(function (jqXHR, textStatus, errorThrown) {
 		console.log("Error Message  " + textStatus);
 	});
+
+
 
 	$.ajax({
 		url: queryURL2,
@@ -217,27 +218,12 @@ $("#showNews").on("click", function (e) {
 		console.log(" Response  imageurl  " + response.articles[0].urlToImage);
 		console.log(" Response  date  " + response.articles[0].publishedAt);
 
-		if(newsTitle2==="null"){
+		if(response===""){
+			console.log("No Article");
 			article2Div.text("No article found");
 		}
 
-
-		else if(lean==="right"){
-			var tophalf=$("<div>");
-			tophalf.addClass("topHalf");
-			var pic= $("<img>");
-			pic.addClass("img-thumbnail");
-			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
-			tophalf.append(pic);
-			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+
-				"target='_blank'>"+response.articles[0].title+"</a></h3><h4> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
-				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
-				"</h4><h4>"+response.articles[0].description+"</h4>");
-			article2Div.append(tophalf);
-		$(".leftArticle").html(article2Div);
-		}
-
-		else if(lean==="left"){
+		else {
 			var tophalf=$("<div>");
 			tophalf.addClass("topHalf");			
 			var pic= $("<img>");
@@ -249,13 +235,18 @@ $("#showNews").on("click", function (e) {
 				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
 				"</h4><h4>"+response.articles[0].description+"</h4>");
 			article2Div.append(tophalf);
-			$(".rightArticle").html(article2Div);
 		}
 
 		for (var j = 1; j < 10; j++) {
 			if (response.articles[0].title != response.articles[j].title) {
-				console.log(" Response  ttle   " + response.articles[j].title);
-				console.log(" Response  url   " + response.articles[j].url);
+
+				var article2childDiv=$("<div>");
+				article2childDiv.addClass("additionalArticle");
+				article2childDiv.append("<h3 class='articleText'><a href="+response.articles[j].url+
+				">"+response.articles[j].title+"</a></h3>");
+				article2Div.append(article2childDiv);
+				//console.log(" Response  ttle   " + response.articles[j].title);
+				//console.log(" Response  url   " + response.articles[j].url);
 				count++;
 			}
 			if(count===5)
@@ -277,6 +268,16 @@ $("#showNews").on("click", function (e) {
 
 			console.log("news title 2  "  +newsTitle2);		
 			console.log("Likes: " + results[0].thread.social.facebook.likes);
+
+			if(results != "")
+			{
+
+			console.log("Likes: " + results[0].thread.social.facebook.likes);
+				}
+			else
+			{
+				console.log("content not found");
+			}
 			
 	    }).fail(function (jqXHR, textStatus, errorThrown) {
 		console.log("Error Message  " + textStatus);
@@ -287,7 +288,19 @@ $("#showNews").on("click", function (e) {
 		console.log("Error Message  " + textStatus);
 	});
 
+if(lean="left"){
+	$(".leftArticle").append(article1Div);
+	$(".rightArticle").append(article2Div);
 }
+
+else if (lean="right"){
+	$(".leftArticle").append(article2Div);
+	$(".rightArticle").append(article1Div);
+}
+}
+
+
+
 
 //Katharine's Code that creates chart
 
