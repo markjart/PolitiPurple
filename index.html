@@ -7,8 +7,7 @@
 
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-	<!-- <link href="https://fonts.googleapis.com/css?family=Anton|Dancing+Script|Gloria+Hallelujah|Josefin+Sans|Lobster|Pacifico" rel="stylesheet"> -->
-	<link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Alegreya+Sans" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Alegreya+Sans|Cormorant+Garamond|Playfair+Display" rel="stylesheet">
 	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/style.css">
 
@@ -38,59 +37,92 @@
 	  		</div>
 		</div>
 
-		<div class="container searchContainer">
-			<div class="row">
-				<div class="col-sm-3">
-					<div class="topic-source myBox">
-						<input id="searchTopic" type="text" placeholder="Search Topic (Required)">
-					</div>
-				</div>
-				<div class="col-sm-3 formControl myBox"> 
-					<select class= "myBox" id="sourceBar">
-						<option value="select-news-source">Select News Source (Required)</option>
-						<option value="breitbart-news" >Breitbart News</option>
-						<option value="buzzfeed" >BuzzFeed</option>
-				        <option value="cnn" >CNN</option>
-				        <option value="fox-news" >Fox News</option>
-				        <option value="the-huffington-post" >Huffington Post</option>
-				        <option value="msnbc" >MSNBC</option>
-				        <option value="the-economist" >The Economist</option>
-				        <option value="the-guardian-uk" >The Guardian UK</option>
-				        <option value="the-hill" >The Hill</option>
-				   		<option value="time">Time</option>
-				   		<option value="the-washing-post">Washington Post</option>
-				   		<option value="the-wall-street-journal" >Wall Street Journal</option>
-					</select>
-				</div>
-				<div class="col-sm-3">
-					<div class="myBox">
-						<input id="ageBox" placeholder="Your Age (Optional)">
-					</div>
-				</div>
-				<div class="col-sm-3">
-					<select class="formControl myBox" id="genderBox">
-						<option value="gender">Your Gender (Optional)</option>
-						<option value="male">Female</option>
-						<option value="female">Male</option>
-						<option value="other">Other</option>
-					</select>
-				</div>
-			</div>
-			<div class="row">
-				 	<button type="button" class="btn btn-secondary" id="showNews">Search the News</button>
-			</div>
-		</div>
+		<div class="container">
+            <div class="row">
+               <div class="col-md-9 col-sm-9"></div>
+               <div class="col-md-1 col-sm-1">
+                  <button type="button" class="btn btn-secondary" id="newSearch">New Search</button>
+               </div>
+               <div class="col-md-1 col-sm-1"></div>
+               <div class="col-md-1 col-sm-1">
+                  <button type="button" class="btn btn-secondary" id="chart">Chart</button>
+               </div>
+            </div>
+         </div>
+         <div id="myModal" class="modal">
+            <div class="modal-content-1 rounded">
+               <div class="container modalCont">
+                  <div class="row">
+                     <div class="col-sm-11"></div>
+                     <div class="col-sm-1">
+                        <span class="optionalClose">&times;</span>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <p id="userMsg"></p>
+                     <button type="button" class="btn btn-secondary" id="btn-ok">OK</button>
+                     <!-- till here -->
+
+                     <!-- <div class="container searchContainer">
+                        <div class="row"> -->
+                     <div class="col-sm-3">
+                        <div class="topic-source myBox">
+                           <input id="searchTopic" type="text" placeholder="Search Topic (Required)">
+                        </div>
+                     </div>
+                     <div class="col-sm-3 formControl myBox">
+                        <select class= "myBox" id="sourceBar">
+                           <option value="select-news-source">Select News Source (Required)</option>
+                           <option value="breitbart-news" >Breitbart News</option>
+                           <option value="buzzfeed" >BuzzFeed</option>
+                           <option value="cnn" >CNN</option>
+                           <option value="fox-news" >Fox News</option>
+                           <option value="the-huffington-post" >Huffington Post</option>
+                           <option value="msnbc" >MSNBC</option>
+                           <option value="the-economist" >The Economist</option>
+                           <option value="the-guardian-uk" >The Guardian UK</option>
+                           <option value="the-hill" >The Hill</option>
+                           <option value="time">Time</option>
+                           <option value="the-washing-post">Washington Post</option>
+                           <option value="the-wall-street-journal" >Wall Street Journal</option>
+                        </select>
+                     </div>
+                     <div class="col-sm-3">
+                        <div class="myBox">
+                           <input id="ageBox" placeholder="Your Age (Optional)">
+                        </div>
+                     </div>
+                     <div class="col-sm-2">
+                        <select class="formControl myBox" id="genderBox">
+                           <option value="gender">Your Gender (Optional)</option>
+                           <option value="male">Female</option>
+                           <option value="female">Male</option>
+                           <option value="other">Other</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <button type="button" class="btn btn-secondary" id="showNews">Search the News</button>
+                  </div>
+               </div>
+            </div>
+         </div>
 		<div class="container articleContainer">
   			<div class="row">
-    			<div class="col-sm leftArticle"></div>
-    			<div class="col-sm rightArticle"></div>
+    			<div class="col-sm flip-containerL leftArticle"></div>
+    			<div class="col-sm flip-containerR rightArticle"></div>
   			</div>
 		</div>
 	
-		<div class="container chartContainer">
-			<div id="myChart"></div>
-			<p> The pairing of equal and opposite sources have been based on the Media Bias Chart and analysis. For more information and more ranking of sources, <a href="http://www.allgeneralizationsarefalse.com/the-chart-version-3-0-what-exactly-are-we-reading/" target="_blank">continue reading here.</a></p> 
-		</div>
+		<div id="chartModal" class="modal">
+            <div class="modal-content-2 rounded">
+               <div class="container chartContainer">
+                  <span class="col-1 col-sm-1 col-md-1 close">&times;</span>
+                  <p> The pairing of equal and opposite sources have been based on the Media Bias Chart and analysis. For more information and more ranking of sources, <a href="http://www.allgeneralizationsarefalse.com/the-chart-version-3-0-what-exactly-are-we-reading/" target="_blank">continue reading here.</a></p>
+                  <div id="myChart"></div>
+               </div>
+            </div>
+         </div>
 
 		<div class="push"></div>
 	</div>
