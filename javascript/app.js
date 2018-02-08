@@ -22,6 +22,11 @@
 	var age="";
 	var gender="";
 	var lean="";
+
+	var modal = $("#myModal");
+	var chartModal = $("#chartModal");
+	var article1Div = $("<div>");
+	var article2Div = $("<div>");
 	//sets news sources pairs
 	var newsSourcePair = {
 		"pair1": ["the-washington-post", "time"],
@@ -34,6 +39,82 @@
 
 
 	var pair = ["pair1", "pair2", "pair3", "pair4", "pair5", "pair6"];
+
+	$(document).ready(function () {
+	// Open the modal 
+		modal.css({
+			"display": "block"
+		});
+		$("#btn-ok").css({
+			"display": "none"
+		});
+		$("#newSearch").css({
+			"display": "none"
+		});
+		$("#chart").css({
+			"display": "none"
+		});
+		$(".optionalClose").css({
+			"display": "none"
+		});
+	});
+
+	$(".optionalClose").on("click", function (e) {
+		modal.css({
+			"display": "none"
+		});
+	});
+
+	$("#chart").on("click", function (e) {
+		chartModal.css({
+			"display": "block"
+		});
+
+	});
+
+	$(".close").on("click", function () {
+		chartModal.css({
+			"display": "none"
+		});
+
+	});
+	$("#newSearch").on("click", function (e) {
+		modal.css({
+			"display": "block"
+		});
+		$(".optionalClose").css({
+			"display": "block"
+		});
+		//reset boxes
+		$("#searchTopic").val("");
+		$(".myBox").val("select-news-source");
+		$("#ageBox").val("");
+		$("#genderBox").val("gender");
+
+
+	});
+
+	$("#btn-ok").on("click", function (e) {
+		$("#searchTopic").show();
+		$(".myBox").show();
+		$("#ageBox").show();
+		$("#genderBox").show();
+		$("#showNews").css({
+			"display": "block"
+		});
+		$("#btn-ok").css({
+			"display": "none"
+		});
+		$("#userMsg").empty();
+		$(".chartContainer").hide();
+
+		//reset boxes
+		$("#searchTopic").val("");
+		$(".myBox").val("select-news-source");
+		$("#ageBox").val("");
+		$("#genderBox").val("gender");
+
+	});
 
 function pairFind() {
 
@@ -57,22 +138,22 @@ function pairFind() {
 
 $("#showNews").on("click", function (e) {
     e.preventDefault();
+
+    $(".leftArticle").html("");
+    $(".rightArticle").html("");
+
     if($("#searchTopic").val()!="" && $(".myBox option:selected").val()!= "select-news-source"){     
         newsSubject = $("#searchTopic").val().trim();
         age = $("#ageBox").val().trim();
         gender = $("#genderBox").val().trim();
         var dateAdded=moment().format("YYYY-MM-DD");
-        pairFind();
-        console.log(age);
 
         if(age==""){
            age=0;
-       }
-       else if(parseInt(age) > 1 || parseInt(age) < 100){
+       }else if(parseInt(age) > 1 || parseInt(age) < 100){
            age=age;
 
-       }
-       else{
+       }else{
            age=-1;
        }
 
@@ -85,22 +166,40 @@ $("#showNews").on("click", function (e) {
 	    dateAdded: dateAdded
 	      })
 
-    	}
+	    	modal.css({
+				"display": "none"
+			});
+			pairFind();
 
-    	else{
-    		console.log("Please Enter Valid Age");
-    	}
+    	}else {
+			//console.log("Please Enter Valid Age");
+			$("#searchTopic").hide();
+			$(".myBox").hide();
+			$("#ageBox").hide();
+			$("#genderBox").hide();
+			$("#showNews").css({
+				"display": "none"
+			});
+			$("#btn-ok").css({
+				"display": "block"
+			});
+			$("#userMsg").empty().append("Please Enter Valid Age in Numbers");
 
-    	//reset boxes
-    	$("#searchTopic").val("");
-        $(".myBox").val("select-news-source");
-        $("#ageBox").val("");
-        $("#genderBox").val("gender");
-    	}
-
-    else{
-        console.log("Please enter required values");
-    }
+		}
+	}else {
+		// console.log("Please enter required values");
+		$("#searchTopic").hide();
+		$(".myBox").hide();
+		$("#ageBox").hide();
+		$("#genderBox").hide();
+		$("#showNews").css({
+			"display": "none"
+		});
+		$("#btn-ok").css({
+			"display": "block"
+		});
+		$("#userMsg").empty().append("Please Enter required values");
+	}
 
 });
 
@@ -118,14 +217,30 @@ $("#showNews").on("click", function (e) {
 	console.log("news Source 1   " + newsSource1);
 	console.log("news source 2   " + newsSource2);
 
+	$(".leftArticle").show();
+	$(".rightArticle").show();
+
+	$("#newSearch").css({
+		"display": "block"
+	});
+	$("#chart").css({
+		"display": "block"
+	});
+
 	var queryURL1 = "https://newsapi.org/v2/everything?q=" + newsSubject + "&sources=" + newsSource1 + "&sortBy=relevancy&from=" + from + "&to=" + to + "&language=en&apiKey=" + apiKey;
 
 	var queryURL2 = "https://newsapi.org/v2/everything?q=" + newsSubject + "&sources=" + newsSource2 + "&sortBy=relevancy&from=" + from + "&to=" + to + "&language=en&apiKey=" + apiKey;
 
-	var article1Div=$("<div>");
-	var article2Div=$("<div>");
-	article1Div.addClass("allArticles");
-	article2Div.addClass("allArticles");
+	article1Div.addClass("card flipper");
+	article2Div.addClass("card flipper");
+	var front1=$("<div>");
+	front1.addClass("front");
+	var back1=$("<div>");
+	back1.addClass("back card-body");
+	var front2=$("<div>");
+	front2.addClass("front");
+	var back2=$("<div>");
+	back2.addClass("back card-body");
 
 	$.ajax({
 		url: queryURL1,
@@ -142,42 +257,43 @@ $("#showNews").on("click", function (e) {
 		console.log(" Response  imageurl  " + response.articles[0].urlToImage);
 		console.log(" Response  date  " + response.articles[0].publishedAt);
 
-		if(response===""){
-			console.log("No Article");
-			article1Div.text("No article found");
-		}
 
 		//this will append an left source to the left side and vice versa
-		else {
-			var tophalf=$("<div>");
-			tophalf.addClass("topHalf");
+			
 			var pic= $("<img>");
-			pic.addClass("img-thumbnail");
+			pic.addClass("card-img-top");
+			var lowhalf=$("<div>");
+			lowhalf.addClass("card-body");
+			
+
 			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
-			tophalf.append(pic);
-			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+
-				"target='_blank'>"+response.articles[0].title+"</a></h3><h4> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
+			front1.html(pic);
+
+			lowhalf.append("<h3 class='card-title articleText'><a href="+response.articles[0].url+" "+
+				"target='_blank'>"+response.articles[0].title+
+				"</a></h3><h4 class='secondLine'> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
 				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
-				"</h4><h4>"+response.articles[0].description+"</h4>");
-			article1Div.append(tophalf);
-		}
+				"</h4><p class='card-text'>"+response.articles[0].description);
+			front1.append(lowhalf);
+
 
 		//different layout for next articles
+
 		for (var i = 1; i < 10; i++) {
 			if (response.articles[0].title != response.articles[i].title) {
 
 				var article1childDiv=$("<div>");
-				article1childDiv.addClass("additionalArticle");
-				article1childDiv.append("<h3 class='articleText'><a href="+response.articles[i].url+
+				article1childDiv.addClass("otherArticles");
+				article1childDiv.append("<h3><a href="+response.articles[i].url+" "+
 				"target='_blank'>"+response.articles[i].title+"</a></h3>");
-				article1Div.append(article1childDiv);
-				// console.log(" Response  ttle   " + response.articles[i].title);
-				// console.log(" Response  url   " + response.articles[i].url);
+				back1.append(article1childDiv);
 				count++;
 			}
 			if(count===5)
 			{
 				count=1;
+				back1.append("<button class='toggle'>See Other Top News Stories</button>");
+			article1Div.append(back1);
 				break;
 			}
 		}
@@ -199,9 +315,10 @@ $("#showNews").on("click", function (e) {
 
 			var likeDiv=$("<div>");
 				likeDiv.addClass("likeDiv");
-				likeDiv.append("<p>This article was identified as a top article on facebook and received:"
-					+ " "+results[0].thread.social.facebook.likes+" "+ "likes<i class='far fa-thumbs-up'></i></p>");
-				article1Div.prepend(likeDiv);
+				likeDiv.append("<p><i class='far fa-thumbs-up'></i>"+" "+results[0].thread.social.facebook.likes+" "+ "liked this</p>");
+				front1.append(likeDiv);
+				front1.append("</p><button class='toggle'>See Other Top News Stories</button>");
+				article1Div.prepend(front1);
 
 				}
 			else
@@ -210,8 +327,10 @@ $("#showNews").on("click", function (e) {
 
 				var likeDiv=$("<div>");
 				likeDiv.addClass("likeDiv");
-				likeDiv.append("<p>This article was not identified as a top article on facebook.</p>");
-				article1Div.prepend(likeDiv);
+				likeDiv.append("<p>Likes not Available</p>");
+				front1.append(likeDiv);
+				front1.append("</p><button class='toggle'>See Other Top News Stories</button>");
+				article1Div.prepend(front1);
 			}
 
 	    }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -221,9 +340,23 @@ $("#showNews").on("click", function (e) {
 
 	}).fail(function (jqXHR, textStatus, errorThrown) {
 		console.log("Error Message  " + textStatus);
+		modal.css({
+			"display": "block"
+		});
+		$(".leftArticle").hide();
+		$(".rightArticle").hide();
+		$("#searchTopic").hide();
+		$(".myBox").hide();
+		$("#ageBox").hide();
+		$("#genderBox").hide();
+		$("#showNews").css({
+			"display": "none"
+		});
+		$("#btn-ok").css({
+			"display": "block"
+		});
+		$("#userMsg").empty().append("No article found, try new search");
 	});
-
-
 
 	$.ajax({
 		url: queryURL2,
@@ -237,40 +370,38 @@ $("#showNews").on("click", function (e) {
 		console.log(" Response  imageurl  " + response.articles[0].urlToImage);
 		console.log(" Response  date  " + response.articles[0].publishedAt);
 
-		if(response===""){
-			console.log("No Article");
-			article2Div.text("No article found");
-		}
 
-		else {
-			var tophalf=$("<div>");
-			tophalf.addClass("topHalf");			
 			var pic= $("<img>");
-			pic.addClass("img-thumbnail");
-			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
-			tophalf.append(pic);
-			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+
-				"target='_blank'>"+response.articles[0].title+"</a></h3><h4> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
-				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
-				"</h4><h4>"+response.articles[0].description+"</h4>");
-			article2Div.append(tophalf);
-		}
+			pic.addClass("card-img-top");
+			var lowhalf=$("<div>");
+			lowhalf.addClass("card-body");
+			
 
-		for (var j = 1; j < 10; j++) {
-			if (response.articles[0].title != response.articles[j].title) {
+			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
+			front2.html(pic);
+
+			lowhalf.append("<h3 class='card-title articleText'><a href="+response.articles[0].url+" "+
+				"target='_blank'>"+response.articles[0].title+
+				"</a></h3><h4 class='secondLine'> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
+				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
+				"</h4><p class='card-text'>"+response.articles[0].description);
+			front2.append(lowhalf);
+
+		for (var i = 1; i < 10; i++) {
+			if (response.articles[0].title != response.articles[i].title) {
 
 				var article2childDiv=$("<div>");
-				article2childDiv.addClass("additionalArticle");
-				article2childDiv.append("<h3 class='articleText'><a href="+response.articles[j].url+
-				"target='_blank'>"+response.articles[j].title+"</a></h3>");
-				article2Div.append(article2childDiv);
-				// console.log(" Response  ttle   " + response.articles[j].title);
-				// console.log(" Response  url   " + response.articles[j].url);
+				article2childDiv.addClass("otherArticles");
+				article2childDiv.append("<h3><a href="+response.articles[i].url+" "+
+				"target='_blank'>"+response.articles[i].title+"</a></h3>");
+				back2.append(article2childDiv);
 				count++;
 			}
 			if(count===5)
 			{
 				count=1;
+				back2.append("<button class='toggle'>See Other Top News Stories</button>");
+			article2Div.append(back2);
 				break;
 			}
 		}
@@ -287,22 +418,27 @@ $("#showNews").on("click", function (e) {
 
 			if(results != "")
 			{
-			console.log("news title 2  "  +newsTitle2);	
+			console.log("news title 2  "  +newsTitle2);
 			console.log("Likes: " + results[0].thread.social.facebook.likes);
 
 			var likeDiv=$("<div>");
 				likeDiv.addClass("likeDiv");
-				likeDiv.append("<p>This article was identified as a top article on facebook and received:"
-					+ " "+results[0].thread.social.facebook.likes+" "+ "likes<i class='far fa-thumbs-up'></i></p>");
-				article2Div.prepend(likeDiv);
+				likeDiv.append("<p><i class='far fa-thumbs-up'></i>"+" "+results[0].thread.social.facebook.likes+" "+ "liked this</p>");
+				front2.append(likeDiv);
+				front2.append("</p><button class='toggle'>See Other Top News Stories</button>");
+				article2Div.prepend(front2);
+
 				}
 			else
 			{
 				console.log("content not found");
+
 				var likeDiv=$("<div>");
 				likeDiv.addClass("likeDiv");
-				likeDiv.append("<p>This article was not identified as a top article on facebook.</p>");
-				article2Div.prepend(likeDiv);
+				likeDiv.append("<p>Likes not Available</p>");
+				front2.append(likeDiv);
+				front2.append("</p><button class='toggle'>See Other Top News Stories</button>");
+				article2Div.prepend(front2);
 			}
 			
 	    }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -312,23 +448,49 @@ $("#showNews").on("click", function (e) {
     
 	}).fail(function (jqXHR, textStatus, errorThrown) {
 		console.log("Error Message  " + textStatus);
+		modal.css({
+			"display": "block"
+		});
+		$(".leftArticle").hide();
+		$(".rightArticle").hide();
+		$("#searchTopic").hide();
+		$(".myBox").hide();
+		$("#ageBox").hide();
+		$("#genderBox").hide();
+		$("#showNews").css({
+			"display": "none"
+		});
+		$("#btn-ok").css({
+			"display": "block"
+		});
+		$("#userMsg").empty().append("No article found, try new search");
 	});
 
-if(lean==="left"){
-	$(".leftArticle").append(article1Div);
-	$(".rightArticle").append(article2Div);
-	lean="";
+if(lean==="left"){    
+    $(".leftArticle").append(article1Div);
+     $(".rightArticle").append(article2Div);
+    lean="";
 }
 
 else if (lean==="right"){
-	$(".leftArticle").append(article2Div);
-	$(".rightArticle").append(article1Div);
-	lean="";
+    article2Div.addClass("leftInfo");
+    $(".leftArticle").append(article2Div);
+    article1Div.addClass("rightInfo");
+    $(".rightArticle").append(article1Div);
+    lean="";
 }
 }
 
 
+$(".leftArticle").on("click",".toggle", function() {
+	console.log("click");
+    $(".flip-containerL").toggleClass("hover");
+})
 
+$(".rightArticle").on("click",".toggle", function() {
+	console.log("click");
+    $(".flip-containerR").toggleClass("hover");
+})
 
 //Katharine's Code that creates chart
 
