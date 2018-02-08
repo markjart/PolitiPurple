@@ -155,7 +155,7 @@ $("#showNews").on("click", function (e) {
 			pic.addClass("img-thumbnail");
 			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
 			tophalf.append(pic);
-			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+
+			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+" "+
 				"target='_blank'>"+response.articles[0].title+"</a></h3><h4> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
 				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
 				"</h4><h4>"+response.articles[0].description+"</h4>");
@@ -168,7 +168,7 @@ $("#showNews").on("click", function (e) {
 
 				var article1childDiv=$("<div>");
 				article1childDiv.addClass("additionalArticle");
-				article1childDiv.append("<h3 class='articleText'><a href="+response.articles[i].url+
+				article1childDiv.append("<h3 class='articleText'><a href="+response.articles[i].url+" "+
 				"target='_blank'>"+response.articles[i].title+"</a></h3>");
 				article1Div.append(article1childDiv);
 				// console.log(" Response  ttle   " + response.articles[i].title);
@@ -249,7 +249,7 @@ $("#showNews").on("click", function (e) {
 			pic.addClass("img-thumbnail");
 			pic.attr({"src": response.articles[0].urlToImage,"alt":"News Picture"});
 			tophalf.append(pic);
-			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+
+			tophalf.append("<h3 class='articleText'><a href="+response.articles[0].url+" "+
 				"target='_blank'>"+response.articles[0].title+"</a></h3><h4> Published by"+" "+"<strong>"+response.articles[0].source.name+"</strong>"+
 				" "+"on"+" "+moment(response.articles[0].publishedAt).format("MM-DD-YYYY")+
 				"</h4><h4>"+response.articles[0].description+"</h4>");
@@ -261,7 +261,7 @@ $("#showNews").on("click", function (e) {
 
 				var article2childDiv=$("<div>");
 				article2childDiv.addClass("additionalArticle");
-				article2childDiv.append("<h3 class='articleText'><a href="+response.articles[j].url+
+				article2childDiv.append("<h3 class='articleText'><a href="+response.articles[j].url+" "+
 				"target='_blank'>"+response.articles[j].title+"</a></h3>");
 				article2Div.append(article2childDiv);
 				// console.log(" Response  ttle   " + response.articles[j].title);
